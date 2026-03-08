@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark" data-variant="A">
+<head>
+<meta charset="UTF-8">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IronCode — Raqamli Yechimlar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ─── CSS VARIABLES ─── */
+:root {
+  --accent: #00e5ff;
+  --accent2: #7b2ff7;
+  --accent3: #ff6b35;
+  --bg: #050a0f;
+  --bg2: #0a1520;
+  --bg3: #0f1e2e;
+  --surface: rgba(255,255,255,0.04);
+  --surface2: rgba(255,255,255,0.08);
+  --border: rgba(0,229,255,0.15);
+  --text: #e8f4ff;
+  --text2: #7a9bb5;
+  --text3: #4a6b85;
+  --radius: 16px;
+  --radius-sm: 8px;
+  --shadow: 0 8px 40px rgba(0,229,255,0.08);
+  --transition: 0.35s cubic-bezier(0.4,0,0.2,1);
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'Manrope', sans-serif;
+  --max-w: 1200px;
+  --nav-h: 72px;
+}
+[data-theme="light"] {
+  --bg: #f0f6ff;
+  --bg2: #e2edf8;
+  --bg3: #d4e4f4;
+  --surface: rgba(0,0,0,0.04);
+  --surface2: rgba(0,0,0,0.07);
+  --border: rgba(0,100,200,0.15);
+  --text: #0a1a2e;
+  --text2: #3a5a7a;
+  --text3: #6a8aaa;
+  --shadow: 0 8px 40px rgba(0,100,200,0.08);
+}
+
+/* ─── RESET ─── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-body);
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  overflow-x:hidden;
+  transition:background var(--transition),color var(--transition);
+}
+a{text-decoration:none;color:inherit}
+img{max-width:100%}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:2px}
+
+/* ─── NOISE TEXTURE ─── */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:.5;
+}
+
+/* ─── GLOW ORBS ─── */
+.orb{
+  position:fixed;border-radius:50%;filter:blur(80px);
+  pointer-events:none;z-index:0;opacity:.18;
+  animation:float 8s ease-in-out infinite;
+}
+.orb-1{width:500px;height:500px;background:var(--accent2);top:-100px;left:-150px;animation-delay:0s}
+.orb-2{width:400px;height:400px;background:var(--accent);bottom:100px;right:-100px;animation-delay:-3s}
+.orb-3{width:300px;height:300px;background:var(--accent3);top:40%;left:40%;animation-delay:-5s}
+@keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-30px) scale(1.05)}}
+[data-theme="light"] .orb{opacity:.08}
+
+/* ─── NAV ─── */
+nav{
+  position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 clamp(20px,5vw,60px);
+  background:rgba(5,10,15,0.6);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  transition:background var(--transition);
+}
+[data-theme="light"] nav{background:rgba(240,246,255,0.7)}
+.logo{
+  font-family:var(--font-display);font-size:1.5rem;font-weight:800;
+  letter-spacing:-0.5px;
+}
+.logo .logo-iron{
+  color:#e8f4ff;
+  transition:color var(--transition);
+}
+[data-theme="light"] .logo .logo-iron{
+  color:#0a1a2e;
+}
+.logo .logo-code{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.logo .logo-code{
+  animation:logoSpin 6s linear infinite;
+}
+@keyframes logoSpin{0%,100%{filter:hue-rotate(0deg)}50%{filter:hue-rotate(30deg)}}
+.nav-links{display:flex;align-items:center;gap:2rem}
+.nav-link{
+  font-size:.875rem;font-weight:500;color:var(--text2);
+  position:relative;transition:color var(--transition);padding:4px 0;
+}
+.nav-link::after{
+  content:'';position:absolute;bottom:0;left:0;width:0;height:1.5px;
+  background:var(--accent);transition:width var(--transition);
+}
+.nav-link:hover{color:var(--text)}.nav-link:hover::after{width:100%}
+.nav-controls{display:flex;align-items:center;gap:12px}
+.ctrl-btn{
+  width:38px;height:38px;border-radius:50%;
+  background:var(--surface2);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;transition:all var(--transition);color:var(--text);
+}
+.ctrl-btn:hover{background:var(--accent);color:#000;border-color:var(--accent);transform:scale(1.1)}
+.lang-btn{
+  height:34px;padding:0 14px;border-radius:20px;
+  background:var(--surface2);border:1px solid var(--border);
+  font-size:.8rem;font-weight:600;color:var(--text2);
+  transition:all var(--transition);letter-spacing:.5px;
+}
+.lang-btn:hover{background:var(--accent);color:#000;border-color:var(--accent)}
+.menu-btn{display:none;flex-direction:column;gap:5px;padding:8px}
+.menu-btn span{width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .3s}
+
+/* ─── HERO ─── */
+.hero{
+  min-height:100vh;display:flex;align-items:center;
+  padding:var(--nav-h) clamp(20px,5vw,60px) 0;
+  position:relative;z-index:1;
+  background-image:url('https://images.unsplash.com/photo-1605379399642-870262d3d051?w=1600&h=900&q=60&auto=format&fit=crop');
+  background-size:cover;background-position:center;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;z-index:0;
+  background:linear-gradient(135deg,var(--bg) 0%,rgba(5,10,15,0.85) 50%,rgba(5,10,15,0.65) 100%);
+}
+[data-theme="light"] .hero::before{
+  background:linear-gradient(135deg,var(--bg) 0%,rgba(240,246,255,0.88) 50%,rgba(240,246,255,0.7) 100%);
+}
+.hero-inner{max-width:var(--max-w);margin:0 auto;width:100%;position:relative;z-index:1;
+  display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 16px;border-radius:20px;
+  background:rgba(0,229,255,0.1);border:1px solid rgba(0,229,255,0.3);
+  font-size:.8rem;font-weight:600;color:var(--accent);
+  margin-bottom:24px;letter-spacing:.5px;
+}
+.tag-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+.hero-title{
+  font-family:var(--font-display);
+  font-size:clamp(2.4rem,5vw,4.2rem);
+  font-weight:800;line-height:1.1;
+  letter-spacing:-1.5px;margin-bottom:24px;
+}
+.hero-title .line{display:block;overflow:hidden}
+.hero-title .word{
+  display:inline-block;
+  animation:slideUp .7s cubic-bezier(0.4,0,0.2,1) both;
+}
+.hero-title .word:nth-child(1){animation-delay:.1s}
+.hero-title .word:nth-child(2){animation-delay:.2s}
+.hero-title .word:nth-child(3){animation-delay:.3s}
+@keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+.accent-text{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-desc{
+  font-size:1.1rem;color:var(--text2);line-height:1.7;
+  margin-bottom:36px;max-width:520px;
+  animation:fadeIn .8s .5s both;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.hero-btns{display:flex;gap:16px;flex-wrap:wrap;animation:fadeIn .8s .7s both}
+.btn-primary{
+  padding:14px 32px;border-radius:var(--radius-sm);
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;font-weight:700;font-size:.95rem;
+  position:relative;overflow:hidden;transition:all .3s;
+}
+.btn-primary::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,var(--accent2),var(--accent));
+  opacity:0;transition:opacity .3s;
+}
+.btn-primary:hover::before{opacity:1}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(0,229,255,0.3)}
+.btn-primary span{position:relative;z-index:1}
+.btn-outline{
+  padding:14px 32px;border-radius:var(--radius-sm);
+  border:1.5px solid var(--border);color:var(--text);
+  font-weight:600;font-size:.95rem;
+  transition:all .3s;background:var(--surface);
+}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent);background:rgba(0,229,255,0.06);transform:translateY(-2px)}
+
+/* ─── HERO VISUAL ─── */
+.hero-visual{
+  position:relative;display:flex;justify-content:center;align-items:center;
+  animation:fadeIn .8s .3s both;
+}
+.code-card{
+  background:#0d1b2a;border:1px solid rgba(0,229,255,0.2);
+  border-radius:var(--radius);padding:24px;width:100%;
+  box-shadow:0 8px 40px rgba(0,0,0,0.5);position:relative;overflow:hidden;
+}
+.code-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));
+}
+.code-header{
+  display:flex;align-items:center;gap:8px;margin-bottom:20px;
+  padding-bottom:16px;border-bottom:1px solid rgba(0,229,255,0.15);
+}
+.dot{width:12px;height:12px;border-radius:50%}
+.dot-r{background:#ff5f56}.dot-y{background:#ffbd2e}.dot-g{background:#27c93f}
+.code-title{
+  font-family:'SF Mono',monospace;font-size:.8rem;color:#5a7a95;margin-left:8px;
+}
+.code-body{font-family:'SF Mono',monospace;font-size:.85rem;line-height:1.9;color:#cdd9e5}
+.c-kw{color:#e879f9;font-weight:600}
+.c-fn{color:#60a5fa}
+.c-str{color:#86efac}
+.c-cm{color:#4a6b85;font-style:italic}
+.c-obj{color:#fbbf24}
+.c-num{color:#fb923c}
+.hero-badge{
+  position:absolute;bottom:-20px;right:-10px;
+  background:linear-gradient(135deg,var(--accent2),var(--accent));
+  border-radius:var(--radius);padding:16px 20px;
+  box-shadow:0 20px 40px rgba(123,47,247,0.4);
+}
+.badge-num{font-family:var(--font-display);font-size:2rem;font-weight:800;color:#fff}
+.badge-txt{font-size:.75rem;color:rgba(255,255,255,.7);font-weight:500}
+
+/* ─── STATS ─── */
+.stats{
+  position:relative;z-index:1;
+  padding:60px clamp(20px,5vw,60px);
+}
+.stats-inner{
+  max-width:var(--max-w);margin:0 auto;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:24px;
+}
+.stat-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:28px 24px;text-align:center;
+  transition:all var(--transition);position:relative;overflow:hidden;
+}
+.stat-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,transparent,rgba(0,229,255,0.04));
+  opacity:0;transition:opacity var(--transition);
+}
+.stat-card:hover{transform:translateY(-4px);border-color:rgba(0,229,255,0.4);box-shadow:var(--shadow)}
+.stat-card:hover::before{opacity:1}
+.stat-num{
+  font-family:var(--font-display);font-size:2.4rem;font-weight:800;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.stat-label{font-size:.85rem;color:var(--text2);margin-top:4px}
+
+/* ─── SECTIONS ─── */
+.section{
+  position:relative;z-index:1;
+  padding:100px clamp(20px,5vw,60px);
+}
+.section-inner{max-width:var(--max-w);margin:0 auto}
+.section-header{text-align:center;margin-bottom:64px}
+.section-tag{
+  display:inline-block;padding:4px 14px;border-radius:20px;
+  background:rgba(123,47,247,0.12);border:1px solid rgba(123,47,247,0.3);
+  font-size:.78rem;font-weight:600;color:var(--accent2);
+  letter-spacing:.5px;margin-bottom:16px;
+}
+.section-title{
+  font-family:var(--font-display);font-size:clamp(1.8rem,3.5vw,2.8rem);
+  font-weight:800;letter-spacing:-1px;margin-bottom:16px;
+}
+.section-desc{font-size:1.05rem;color:var(--text2);max-width:560px;margin:0 auto}
+
+/* ─── SERVICES ─── */
+.services-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
+}
+.service-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:0;
+  transition:all .4s cubic-bezier(0.4,0,0.2,1);
+  position:relative;overflow:hidden;cursor:default;
+}
+.service-card::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(0,229,255,0.06),transparent);
+  opacity:0;transition:opacity .4s;pointer-events:none;
+}
+.service-card:hover{transform:translateY(-6px);border-color:rgba(0,229,255,0.5);box-shadow:0 20px 50px rgba(0,229,255,0.1)}
+.service-card:hover::after{opacity:1}
+.service-card:hover .card-img img{transform:scale(1.07)}
+.card-img{
+  width:100%;height:200px;overflow:hidden;position:relative;
+}
+.card-img img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform .5s cubic-bezier(0.4,0,0.2,1);display:block;
+}
+.card-img-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 40%,var(--bg2) 100%);
+}
+[data-theme="light"] .card-img-overlay{
+  background:linear-gradient(180deg,transparent 40%,var(--bg2) 100%);
+}
+.card-body{padding:24px 28px 28px}
+.service-icon{
+  width:48px;height:48px;border-radius:14px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;margin-bottom:16px;
+  box-shadow:0 8px 24px rgba(0,229,255,0.25);
+}
+.service-title{
+  font-family:var(--font-display);font-size:1.2rem;font-weight:700;margin-bottom:10px;
+}
+.service-desc{font-size:.9rem;color:var(--text2);line-height:1.7;margin-bottom:18px}
+.service-tags{display:flex;flex-wrap:wrap;gap:8px}
+.tag{
+  padding:4px 10px;border-radius:6px;
+  background:var(--surface2);font-size:.75rem;color:var(--text3);
+  border:1px solid var(--border);
+}
+
+/* ─── NICHE IMAGE ─── */
+.niche-card .niche-img{
+  width:100%;height:180px;overflow:hidden;border-radius:12px;
+  margin-bottom:20px;position:relative;
+}
+.niche-card .niche-img img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform .5s;display:block;
+}
+.niche-card:hover .niche-img img{transform:scale(1.06)}
+
+/* ─── NICHES ─── */
+.niches-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.niche-card{
+  position:relative;border-radius:var(--radius);overflow:hidden;
+  background:var(--bg2);border:1px solid var(--border);
+  padding:28px 28px 32px;transition:all .4s;
+}
+.niche-card:hover{transform:translateY(-6px);border-color:var(--accent2)}
+.niche-num{
+  font-family:var(--font-display);font-size:3.5rem;font-weight:800;
+  color:rgba(255,255,255,0.05);position:absolute;top:16px;right:20px;
+  line-height:1;
+}
+[data-theme="light"] .niche-num{color:rgba(0,0,0,0.05)}
+.niche-icon{font-size:2rem;margin-bottom:16px}
+.niche-title{
+  font-family:var(--font-display);font-size:1.15rem;font-weight:700;margin-bottom:10px;
+}
+.niche-desc{font-size:.9rem;color:var(--text2);line-height:1.7}
+.niche-line{
+  height:3px;width:40px;margin-top:20px;border-radius:2px;
+  background:linear-gradient(90deg,var(--accent2),var(--accent));
+}
+
+/* ─── OFFERS ─── */
+.offers-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+.offer-card{
+  display:flex;align-items:flex-start;gap:20px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:28px 24px;
+  transition:all var(--transition);
+}
+.offer-card:hover{border-color:var(--accent3);transform:translateX(4px)}
+.offer-icon-wrap{
+  width:48px;height:48px;border-radius:12px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--accent3),#ff3d6b);
+  display:flex;align-items:center;justify-content:center;font-size:1.4rem;
+  box-shadow:0 8px 20px rgba(255,107,53,0.25);
+}
+.offer-title{
+  font-family:var(--font-display);font-size:1.05rem;font-weight:700;margin-bottom:6px;
+}
+.offer-desc{font-size:.88rem;color:var(--text2);line-height:1.6}
+
+/* ─── CONTACT ─── */
+.contact-wrap{
+  max-width:640px;margin:0 auto;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:24px;padding:48px 40px;
+  position:relative;overflow:hidden;
+}
+.contact-wrap::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));
+}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.form-field{display:flex;flex-direction:column;gap:8px}
+.form-field.full{grid-column:1/-1}
+label{font-size:.83rem;font-weight:600;color:var(--text2);letter-spacing:.3px}
+input,textarea,select{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:12px 16px;
+  color:var(--text);font-family:var(--font-body);font-size:.9rem;
+  transition:all var(--transition);outline:none;
+  -webkit-appearance:none;
+}
+input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,229,255,0.1)}
+textarea{resize:vertical;min-height:120px}
+select option{background:var(--bg2)}
+.submit-btn{
+  width:100%;padding:15px;border-radius:var(--radius-sm);
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;font-weight:700;font-size:1rem;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  transition:all .3s;position:relative;overflow:hidden;margin-top:8px;
+}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(0,229,255,0.3)}
+.submit-btn:active{transform:translateY(0)}
+.form-note{
+  text-align:center;margin-top:12px;
+  font-size:.8rem;color:var(--text3);
+}
+.form-note a{color:var(--accent)}
+.toast{
+  position:fixed;bottom:30px;right:30px;z-index:200;
+  background:var(--bg2);border:1px solid rgba(39,201,63,0.4);
+  border-radius:var(--radius-sm);padding:16px 24px;
+  display:flex;align-items:center;gap:12px;
+  font-weight:600;color:var(--text);
+  box-shadow:0 8px 32px rgba(0,0,0,0.3);
+  transform:translateX(120%);transition:transform .4s cubic-bezier(0.4,0,0.2,1);
+  max-width:360px;
+}
+.toast.show{transform:translateX(0)}
+.toast-icon{font-size:1.3rem}
+
+/* ─── WHY US (Variant B extra) ─── */
+.why-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.why-card{
+  text-align:center;padding:32px 20px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);transition:all .3s;
+}
+.why-card:hover{border-color:var(--accent2);transform:translateY(-4px)}
+.why-icon{font-size:2.2rem;margin-bottom:14px}
+.why-title{font-family:var(--font-display);font-size:1rem;font-weight:700;margin-bottom:6px}
+.why-desc{font-size:.84rem;color:var(--text2);line-height:1.6}
+
+/* ─── PROCESS TIMELINE ─── */
+.process-steps{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+  position:relative;
+}
+.process-steps::before{
+  content:'';position:absolute;top:40px;left:12.5%;right:12.5%;
+  height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));
+  z-index:0;
+}
+.process-step{
+  display:flex;flex-direction:column;align-items:center;
+  text-align:center;padding:0 20px;position:relative;z-index:1;
+}
+.step-circle{
+  width:80px;height:80px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:1.5rem;font-weight:800;color:#fff;
+  margin-bottom:16px;box-shadow:0 8px 24px rgba(0,229,255,0.3);
+  border:4px solid var(--bg);
+}
+.step-title{font-family:var(--font-display);font-size:1rem;font-weight:700;margin-bottom:6px}
+.step-desc{font-size:.84rem;color:var(--text2);line-height:1.5}
+
+/* ─── FOOTER ─── */
+footer{
+  position:relative;z-index:1;
+  background:var(--bg2);border-top:1px solid var(--border);
+  padding:60px clamp(20px,5vw,60px) 30px;
+}
+.footer-inner{max-width:var(--max-w);margin:0 auto}
+.footer-top{
+  display:grid;grid-template-columns:2fr 1fr 1fr;gap:48px;
+  margin-bottom:48px;padding-bottom:48px;border-bottom:1px solid var(--border);
+}
+.footer-logo{
+  font-family:var(--font-display);font-size:1.8rem;font-weight:800;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:12px;
+}
+.footer-about{font-size:.9rem;color:var(--text2);line-height:1.7;max-width:320px}
+.footer-socials{display:flex;gap:12px;margin-top:20px}
+.social-btn{
+  width:40px;height:40px;border-radius:10px;
+  background:var(--surface2);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;
+  transition:all .3s;
+}
+.social-btn:hover{background:var(--accent);transform:translateY(-3px)}
+.footer-col h4{
+  font-family:var(--font-display);font-size:.95rem;font-weight:700;
+  margin-bottom:16px;color:var(--text);
+}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+.footer-col ul li a{
+  font-size:.87rem;color:var(--text2);transition:color var(--transition);
+}
+.footer-col ul li a:hover{color:var(--accent)}
+.footer-bottom{
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:16px;
+}
+.footer-copy{font-size:.83rem;color:var(--text3)}
+.footer-heart{color:var(--accent3)}
+
+/* ─── AB TOGGLE ─── */
+.ab-bar{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:4px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:30px;padding:6px 8px;z-index:150;
+  box-shadow:0 8px 32px rgba(0,0,0,0.3);
+  backdrop-filter:blur(20px);
+}
+.ab-label{
+  font-size:.75rem;color:var(--text3);padding:0 8px;font-weight:600;
+  letter-spacing:.5px;
+}
+.ab-btn{
+  height:32px;padding:0 18px;border-radius:20px;
+  font-size:.8rem;font-weight:700;color:var(--text2);
+  transition:all .3s;letter-spacing:.3px;
+}
+.ab-btn.active{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;box-shadow:0 4px 12px rgba(0,229,255,0.3);
+}
+
+/* ─── MOBILE NAV ─── */
+.mobile-nav{
+  position:fixed;inset:0;z-index:99;
+  background:rgba(5,10,15,0.97);backdrop-filter:blur(20px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:32px;transform:translateX(100%);transition:transform .4s cubic-bezier(0.4,0,0.2,1);
+}
+[data-theme="light"] .mobile-nav{background:rgba(240,246,255,0.97)}
+.mobile-nav.open{transform:translateX(0)}
+.mobile-nav .nav-link{font-size:1.5rem;font-family:var(--font-display);font-weight:700}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:1024px){
+  .hero-inner{grid-template-columns:1fr;gap:40px}
+  .hero-visual{display:none}
+  .stats-inner{grid-template-columns:repeat(2,1fr)}
+  .services-grid{grid-template-columns:repeat(2,1fr)}
+  .niches-grid{grid-template-columns:repeat(2,1fr)}
+  .why-grid{grid-template-columns:repeat(2,1fr)}
+  .process-steps{grid-template-columns:repeat(2,1fr)}
+  .process-steps::before{display:none}
+  .footer-top{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+  .nav-links{display:none}
+  .menu-btn{display:flex}
+  .services-grid,.niches-grid,.why-grid,.offers-grid{grid-template-columns:1fr}
+  .stats-inner{grid-template-columns:repeat(2,1fr)}
+  .process-steps{grid-template-columns:1fr}
+  .form-grid{grid-template-columns:1fr}
+  .contact-wrap{padding:32px 20px}
+  .footer-top{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  .stats-inner{grid-template-columns:repeat(2,1fr)}
+  .hero-btns{flex-direction:column}
+  .btn-primary,.btn-outline{text-align:center}
+}
+
+/* ─── SCROLL ANIMATION ─── */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .6s,transform .6s}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ─── VARIANT B OVERRIDES ─── */
+[data-variant="B"] .hero-title{letter-spacing:-2px}
+[data-variant="B"] .service-icon{border-radius:50%}
+[data-variant="B"] .btn-primary{border-radius:30px}
+[data-variant="B"] .btn-outline{border-radius:30px}
+[data-variant="B"] .stat-card{border-radius:24px}
+[data-variant="B"] .section-tag{background:rgba(255,107,53,0.12);border-color:rgba(255,107,53,0.3);color:var(--accent3)}
+[data-variant="B"] .submit-btn{border-radius:30px}
+</style>
+</head>
+<body>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="#services" class="nav-link" onclick="closeMobile()" data-uz="Xizmatlar" data-ru="Услуги">Xizmatlar</a>
+  <a href="#niches" class="nav-link" onclick="closeMobile()" data-uz="Tarmoqlar" data-ru="Сферы">Tarmoqlar</a>
+  <a href="#offers" class="nav-link" onclick="closeMobile()" data-uz="Takliflar" data-ru="Предложения">Takliflar</a>
+  <a href="#process" class="nav-link" onclick="closeMobile()" data-uz="Jarayon" data-ru="Процесс">Jarayon</a>
+  <a href="#contact" class="nav-link" onclick="closeMobile()" data-uz="Aloqa" data-ru="Контакт">Aloqa</a>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo"><span class="logo-iron">Iron</span><span class="logo-code">Code</span></div>
+  <div class="nav-links">
+    <a href="#services" class="nav-link" data-uz="Xizmatlar" data-ru="Услуги">Xizmatlar</a>
+    <a href="#niches" class="nav-link" data-uz="Tarmoqlar" data-ru="Сферы">Tarmoqlar</a>
+    <a href="#offers" class="nav-link" data-uz="Takliflar" data-ru="Предложения">Takliflar</a>
+    <a href="#process" class="nav-link" data-uz="Jarayon" data-ru="Процесс">Jarayon</a>
+    <a href="#contact" class="nav-link" data-uz="Aloqa" data-ru="Контакт">Aloqa</a>
+  </div>
+  <div class="nav-controls">
+    <button class="lang-btn" onclick="toggleLang()" id="langBtn">RU</button>
+    <button class="ctrl-btn" onclick="toggleTheme()" id="themeBtn" title="Rejim">🌙</button>
+    <button class="menu-btn" onclick="toggleMobile()" id="menuBtn">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-tag">
+        <span class="tag-dot"></span>
+        <span data-uz="Raqamli Transformatsiya" data-ru="Цифровая Трансформация">Raqamli Transformatsiya</span>
+      </div>
+      <h1 class="hero-title">
+        <span class="line"><span class="word" data-uz="Kuchli" data-ru="Мощные">Kuchli</span></span>
+        <span class="line"><span class="word accent-text" data-uz="Raqamli" data-ru="Цифровые">Raqamli</span></span>
+        <span class="line"><span class="word" data-uz="Yechimlar" data-ru="Решения">Yechimlar</span></span>
+      </h1>
+      <p class="hero-desc" data-uz="Vebsaytlar, telegram botlar va mobil ilovalar yaratamiz. Biznesingizni raqamli dunyoga olib chiqamiz — arzon, sifatli va ishonchli." data-ru="Создаём сайты, telegram-боты и мобильные приложения. Переводим ваш бизнес в цифровой мир — доступно, качественно и надёжно.">Vebsaytlar, telegram botlar va mobil ilovalar yaratamiz. Biznesingizni raqamli dunyoga olib chiqamiz — arzon, sifatli va ishonchli.</p>
+      <div class="hero-btns">
+        <a href="#contact" class="btn-primary"><span data-uz="Bepul Konsultatsiya" data-ru="Бесплатная Консультация">Bepul Konsultatsiya</span></a>
+        <a href="#services" class="btn-outline" data-uz="Xizmatlar →" data-ru="Услуги →">Xizmatlar →</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="code-card">
+        <div class="code-header">
+          <div class="dot dot-r"></div>
+          <div class="dot dot-y"></div>
+          <div class="dot dot-g"></div>
+          <span class="code-title">ironcode.uz</span>
+        </div>
+        <div class="code-body">
+          <div><span class="c-cm">// IronCode Solutions</span></div>
+          <div><span class="c-kw">const</span> <span class="c-fn">ironcode</span> = {</div>
+          <div>&nbsp;&nbsp;<span class="c-obj">services</span>: [</div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-str">'Website'</span>,</div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-str">'Telegram Bot'</span>,</div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="c-str">'Mobile App'</span></div>
+          <div>&nbsp;&nbsp;],</div>
+          <div>&nbsp;&nbsp;<span class="c-obj">quality</span>: <span class="c-str">'Premium'</span>,</div>
+          <div>&nbsp;&nbsp;<span class="c-obj">price</span>: <span class="c-str">'Affordable'</span>,</div>
+          <div>&nbsp;&nbsp;<span class="c-obj">support</span>: <span class="c-str">'6 months free'</span>,</div>
+          <div>&nbsp;&nbsp;<span class="c-fn">launch</span>: () <span class="c-kw">=></span> 🚀</div>
+          <div>}</div>
+        </div>
+        <div style="margin-top:16px;border-radius:10px;overflow:hidden;height:120px;">
+          <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=500&h=240&q=80&auto=format&fit=crop" alt="coding" referrerpolicy="no-referrer" style="width:100%;height:100%;object-fit:cover;opacity:.7;display:block;"/>
+        </div>
+      </div>
+      <div class="hero-badge">
+        <div class="badge-num">6 oy</div>
+        <div class="badge-txt" data-uz="Bepul server & yordam" data-ru="Бесплатный сервер">Bepul server & yordam</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stats-inner">
+    <div class="stat-card reveal">
+      <div class="stat-num">🚀</div>
+      <div class="stat-label" data-uz="Yangi & Energik Jamoa" data-ru="Новая & Энергичная Команда">Yangi & Energik Jamoa</div>
+    </div>
+    <div class="stat-card reveal" style="transition-delay:.1s">
+      <div class="stat-num">6 oy</div>
+      <div class="stat-label" data-uz="Bepul Texnik Yordam" data-ru="Бесплатная Поддержка">Bepul Texnik Yordam</div>
+    </div>
+    <div class="stat-card reveal" style="transition-delay:.2s">
+      <div class="stat-num">24/7</div>
+      <div class="stat-label" data-uz="Mijozlar Bilan Aloqa" data-ru="Связь с Клиентами">Mijozlar Bilan Aloqa</div>
+    </div>
+    <div class="stat-card reveal" style="transition-delay:.3s">
+      <div class="stat-num">100%</div>
+      <div class="stat-label" data-uz="Sifatga Kafolat" data-ru="Гарантия Качества">Sifatga Kafolat</div>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="section" id="services">
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <div class="section-tag" data-uz="Xizmatlarimiz" data-ru="Наши Услуги">Xizmatlarimiz</div>
+      <h2 class="section-title" data-uz="Nima Yaratamiz?" data-ru="Что Мы Создаём?">Nima Yaratamiz?</h2>
+      <p class="section-desc" data-uz="Har bir loyiha — bu yangi imkoniyat. Biz sizning g'oyangizni haqiqatga aylantiramiz." data-ru="Каждый проект — это новая возможность. Мы превращаем ваши идеи в реальность.">Har bir loyiha — bu yangi imkoniyat. Biz sizning g'oyangizni haqiqatga aylantiramiz.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <div class="card-img">
+          <img src="https://images.unsplash.com/photo-1547658719-da2b51169166?w=600&h=400&q=80&auto=format&fit=crop" alt="Web development" referrerpolicy="no-referrer"/>
+          <div class="card-img-overlay"></div>
+        </div>
+        <div class="card-body">
+        <div class="service-icon">🌐</div>
+        <div class="service-title" data-uz="Vebsayt Yasash" data-ru="Разработка Сайтов">Vebsayt Yasash</div>
+        <p class="service-desc" data-uz="Zamonaviy, tez va moslashuvchan vebsaytlar. Landing page, korporativ sayt, e-commerce va boshqalar." data-ru="Современные, быстрые и адаптивные сайты. Лендинги, корпоративные сайты, интернет-магазины и многое другое.">Zamonaviy, tez va moslashuvchan vebsaytlar. Landing page, korporativ sayt, e-commerce va boshqalar.</p>
+        <div class="service-tags">
+          <span class="tag">Vue.js</span><span class="tag">React</span>
+          <span class="tag">Next.js</span><span class="tag">Laravel</span>
+        </div>
+        </div>
+      </div>
+      <div class="service-card reveal" style="transition-delay:.1s">
+        <div class="card-img">
+          <img src="https://images.unsplash.com/photo-1611746872915-64382b5c76da?w=600&h=400&q=80&auto=format&fit=crop" alt="Telegram bot" referrerpolicy="no-referrer"/>
+          <div class="card-img-overlay"></div>
+        </div>
+        <div class="card-body">
+        <div class="service-icon">🤖</div>
+        <div class="service-title" data-uz="Telegram Bot" data-ru="Telegram Бот">Telegram Bot</div>
+        <p class="service-desc" data-uz="Avtomatik javob beradigan, to'lov qabul qiladigan va mijozlarni boshqaradigan aqlli botlar." data-ru="Умные боты с автоответами, приёмом платежей и управлением клиентами.">Avtomatik javob beradigan, to'lov qabul qiladigan va mijozlarni boshqaradigan aqlli botlar.</p>
+        <div class="service-tags">
+          <span class="tag">Python</span><span class="tag">Aiogram</span>
+          <span class="tag">Inline</span><span class="tag">Payment</span>
+        </div>
+        </div>
+      </div>
+      <div class="service-card reveal" style="transition-delay:.2s">
+        <div class="card-img">
+          <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&h=400&q=80&auto=format&fit=crop" alt="Mobile app" referrerpolicy="no-referrer"/>
+          <div class="card-img-overlay"></div>
+        </div>
+        <div class="card-body">
+        <div class="service-icon">📱</div>
+        <div class="service-title" data-uz="Telefon Ilova" data-ru="Мобильное Приложение">Telefon Ilova</div>
+        <p class="service-desc" data-uz="Android va iOS uchun zamonaviy mobil ilovalar. Foydalanuvchi uchun qulay interfeys bilan." data-ru="Современные мобильные приложения для Android и iOS с удобным интерфейсом.">Android va iOS uchun zamonaviy mobil ilovalar. Foydalanuvchi uchun qulay interfeys bilan.</p>
+        <div class="service-tags">
+          <span class="tag">Flutter</span><span class="tag">React Native</span>
+          <span class="tag">iOS</span><span class="tag">Android</span>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NICHES -->
+<section class="section" id="niches" style="background:var(--bg2)">
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <div class="section-tag" data-uz="Sohamizlar" data-ru="Наши Сферы">Sohamizlar</div>
+      <h2 class="section-title" data-uz="Qaysi Tarmoqlarda Ishlaymiz?" data-ru="В Каких Отраслях Работаем?">Qaysi Tarmoqlarda Ishlaymiz?</h2>
+      <p class="section-desc" data-uz="Turli sohalarda ixtisoslashgan yechimlar taqdim etamiz." data-ru="Предлагаем специализированные решения для различных отраслей.">Turli sohalarda ixtisoslashgan yechimlar taqdim etamiz.</p>
+    </div>
+    <div class="niches-grid">
+      <div class="niche-card reveal">
+        <div class="niche-num">01</div>
+        <div class="niche-img">
+          <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&h=360&q=80&auto=format&fit=crop" alt="Education CRM" referrerpolicy="no-referrer"/>
+        </div>
+        <div class="niche-icon">🎓</div>
+        <div class="niche-title" data-uz="O'quv Markazlari uchun CRM" data-ru="CRM для Учебных Центров">O'quv Markazlari uchun CRM</div>
+        <p class="niche-desc" data-uz="O'quvchilarni kuzatish, to'lov nazorati, ustozlar jadvali va statistika tizimi." data-ru="Отслеживание учеников, контроль оплат, расписание преподавателей и аналитика.">O'quvchilarni kuzatish, to'lov nazorati, ustozlar jadvali va statistika tizimi.</p>
+        <div class="niche-line"></div>
+      </div>
+      <div class="niche-card reveal" style="transition-delay:.1s">
+        <div class="niche-num">02</div>
+        <div class="niche-img">
+          <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=360&q=80&auto=format&fit=crop" alt="E-commerce" referrerpolicy="no-referrer"/>
+        </div>
+        <div class="niche-icon">🛒</div>
+        <div class="niche-title" data-uz="E-Commerce va Service" data-ru="E-Commerce и Сервис">E-Commerce va Service</div>
+        <p class="niche-desc" data-uz="Restoran, do'kon va tadbirkorlar uchun onlayn savdo va servis platformalari." data-ru="Платформы онлайн-торговли и сервисов для ресторанов, магазинов и предпринимателей.">Restoran, do'kon va tadbirkorlar uchun onlayn savdo va servis platformalari.</p>
+        <div class="niche-line"></div>
+      </div>
+      <div class="niche-card reveal" style="transition-delay:.2s">
+        <div class="niche-num">03</div>
+        <div class="niche-img">
+          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=360&q=80&auto=format&fit=crop" alt="Custom apps" referrerpolicy="no-referrer"/>
+        </div>
+        <div class="niche-icon">⚡</div>
+        <div class="niche-title" data-uz="Turli Xil Ilovalar" data-ru="Разнообразные Приложения">Turli Xil Ilovalar</div>
+        <p class="niche-desc" data-uz="Maxsus vazifalar uchun individual ilovalar — sizning g'oyangiz, bizning amalga oshirishimiz." data-ru="Индивидуальные приложения для специальных задач — ваша идея, наша реализация.">Maxsus vazifalar uchun individual ilovalar — sizning g'oyangiz, bizning amalga oshirishimiz.</p>
+        <div class="niche-line"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OFFERS -->
+<section class="section" id="offers">
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <div class="section-tag" data-uz="Afzalliklarimiz" data-ru="Наши Преимущества">Afzalliklarimiz</div>
+      <h2 class="section-title" data-uz="Nima Taklif Qilamiz?" data-ru="Что Мы Предлагаем?">Nima Taklif Qilamiz?</h2>
+      <p class="section-desc" data-uz="Mijozlarimizga eng yaxshi xizmat ko'rsatish — bizning ustuvor vazifamiz." data-ru="Предоставить нашим клиентам лучший сервис — наша приоритетная задача.">Mijozlarimizga eng yaxshi xizmat ko'rsatish — bizning ustuvor vazifamiz.</p>
+    </div>
+    <div class="offers-grid">
+      <div class="offer-card reveal">
+        <div class="offer-icon-wrap">💎</div>
+        <div>
+          <div class="offer-title" data-uz="Arzon va Sifatli" data-ru="Доступно и Качественно">Arzon va Sifatli</div>
+          <p class="offer-desc" data-uz="Raqobatdosh narxlarda eng yuqori sifatli mahsulot. Byudjetingizga mos yechim topamiz." data-ru="Продукт высочайшего качества по конкурентоспособным ценам. Найдём решение под ваш бюджет.">Raqobatdosh narxlarda eng yuqori sifatli mahsulot. Byudjetingizga mos yechim topamiz.</p>
+        </div>
+      </div>
+      <div class="offer-card reveal" style="transition-delay:.1s">
+        <div class="offer-icon-wrap">🛡️</div>
+        <div>
+          <div class="offer-title" data-uz="Bepul Server va Yordam" data-ru="Бесплатный Сервер и Поддержка">Bepul Server va Yordam</div>
+          <p class="offer-desc" data-uz="6 oy bepul server xizmati va texnik yordam. Loyiha topshirilgandan so'ng ham yoningdamiz." data-ru="6 месяцев бесплатного хостинга и технической поддержки. Мы рядом даже после сдачи проекта.">6 oy bepul server xizmati va texnik yordam. Loyiha topshirilgandan so'ng ham yoningdamiz.</p>
+        </div>
+      </div>
+      <div class="offer-card reveal" style="transition-delay:.2s">
+        <div class="offer-icon-wrap">🔐</div>
+        <div>
+          <div class="offer-title" data-uz="Pentesting Xizmati" data-ru="Услуга Пентестинга">Pentesting Xizmati</div>
+          <p class="offer-desc" data-uz="Saytingiz yoki ilovangizning xavfsizligini sinab ko'ramiz va zaifliklarni topamiz." data-ru="Тестируем безопасность вашего сайта или приложения и находим уязвимости.">Saytingiz yoki ilovangizning xavfsizligini sinab ko'ramiz va zaifliklarni topamiz.</p>
+        </div>
+      </div>
+      <div class="offer-card reveal" style="transition-delay:.3s">
+        <div class="offer-icon-wrap">📊</div>
+        <div>
+          <div class="offer-title" data-uz="A/B Testing" data-ru="A/B Тестирование">A/B Testing</div>
+          <p class="offer-desc" data-uz="Saytingizning qaysi versiyasi ko'proq konversiya olib kelishini aniqlaymiz va optimallashtiramiz." data-ru="Определяем, какая версия сайта приносит больше конверсий, и оптимизируем её.">Saytingizning qaysi versiyasi ko'proq konversiya olib kelishini aniqlaymiz va optimallashtiramiz.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="section" style="background:var(--bg2)">
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <div class="section-tag" data-uz="Nega Biz?" data-ru="Почему Мы?">Nega Biz?</div>
+      <h2 class="section-title" data-uz="IronCode Farqi" data-ru="Отличие IronCode">IronCode Farqi</h2>
+    </div>
+    <!-- Team image banner -->
+    <div class="reveal" style="border-radius:var(--radius);overflow:hidden;margin-bottom:40px;height:220px;position:relative;border:1px solid var(--border);">
+      <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&h=440&q=80&auto=format&fit=crop" alt="Development team" referrerpolicy="no-referrer" style="width:100%;height:100%;object-fit:cover;object-position:center 35%;display:block;"/>
+      <div style="position:absolute;inset:0;background:linear-gradient(90deg,var(--bg2) 0%,transparent 40%,transparent 60%,var(--bg2) 100%);"></div>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+        <div style="text-align:center;">
+          <div style="font-family:var(--font-display);font-size:clamp(1.4rem,3vw,2.2rem);font-weight:800;color:#fff;text-shadow:0 2px 20px rgba(0,0,0,0.5);" data-uz="Jamoamiz — eng yaxshi mutaxassislar" data-ru="Наша команда — лучшие специалисты">Jamoamiz — eng yaxshi mutaxassislar</div>
+        </div>
+      </div>
+    </div>
+    <div class="why-grid">
+      <div class="why-card reveal">
+        <div class="why-icon">⚡</div>
+        <div class="why-title" data-uz="Tezlik" data-ru="Скорость">Tezlik</div>
+        <p class="why-desc" data-uz="Loyihani belgilangan muddatda topshiramiz, hech qachon kechiktirmaymiz." data-ru="Сдаём проект в срок, никогда не опаздываем.">Loyihani belgilangan muddatda topshiramiz.</p>
+      </div>
+      <div class="why-card reveal" style="transition-delay:.1s">
+        <div class="why-icon">🎯</div>
+        <div class="why-title" data-uz="Sifat" data-ru="Качество">Sifat</div>
+        <p class="why-desc" data-uz="Har bir kod satri testdan o'tadi. Faqat professional natija." data-ru="Каждая строка кода проходит тестирование. Только профессиональный результат.">Har bir kod satri testdan o'tadi.</p>
+      </div>
+      <div class="why-card reveal" style="transition-delay:.2s">
+        <div class="why-icon">💬</div>
+        <div class="why-title" data-uz="Aloqa" data-ru="Общение">Aloqa</div>
+        <p class="why-desc" data-uz="Doimiy muloqot, shaffof jarayon. Siz har doim bilasiz nima bo'layapti." data-ru="Постоянная коммуникация, прозрачный процесс. Вы всегда знаете, что происходит.">Doimiy muloqot, shaffof jarayon.</p>
+      </div>
+      <div class="why-card reveal" style="transition-delay:.3s">
+        <div class="why-icon">🔄</div>
+        <div class="why-title" data-uz="Qo'llab-quvvatlash" data-ru="Поддержка">Qo'llab-quvvatlash</div>
+        <p class="why-desc" data-uz="Loyiha topshirilgandan so'ng ham biz yoningdamiz. Uzun muddatli hamkorlik." data-ru="Мы рядом даже после сдачи проекта. Долгосрочное партнёрство.">Loyiha topshirilgandan so'ng ham biz yoningdamiz.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="section" id="process">
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <div class="section-tag" data-uz="Jarayon" data-ru="Процесс">Jarayon</div>
+      <h2 class="section-title" data-uz="Qanday Ishlaymiz?" data-ru="Как Мы Работаем?">Qanday Ishlaymiz?</h2>
+    </div>
+    <div class="process-steps">
+      <div class="process-step reveal">
+        <div class="step-circle">01</div>
+        <div class="step-title" data-uz="Muzokaralar" data-ru="Переговоры">Muzokaralar</div>
+        <p class="step-desc" data-uz="Talablarni tinglash va loyiha miqyosini belgilash" data-ru="Выслушиваем требования и определяем масштаб проекта">Talablarni tinglash va loyiha miqyosini belgilash</p>
+      </div>
+      <div class="process-step reveal" style="transition-delay:.15s">
+        <div class="step-circle">02</div>
+        <div class="step-title" data-uz="Dizayn" data-ru="Дизайн">Dizayn</div>
+        <p class="step-desc" data-uz="Wireframe va vizual dizayn tayyorlash" data-ru="Разработка wireframe и визуального дизайна">Wireframe va vizual dizayn tayyorlash</p>
+      </div>
+      <div class="process-step reveal" style="transition-delay:.3s">
+        <div class="step-circle">03</div>
+        <div class="step-title" data-uz="Dasturlash" data-ru="Разработка">Dasturlash</div>
+        <p class="step-desc" data-uz="Frontend va backend kod yozish va integratsiya" data-ru="Написание фронтенд и бэкенд кода и интеграция">Frontend va backend kod yozish va integratsiya</p>
+      </div>
+      <div class="process-step reveal" style="transition-delay:.45s">
+        <div class="step-circle">04</div>
+        <div class="step-title" data-uz="Topshirish" data-ru="Сдача">Topshirish</div>
+        <p class="step-desc" data-uz="Test, optimallashtirish va loyihani topshirish" data-ru="Тестирование, оптимизация и сдача проекта">Test, optimallashtirish va loyihani topshirish</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="section" id="contact" style="background:var(--bg2)">
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <div class="section-tag" data-uz="Aloqa" data-ru="Контакт">Aloqa</div>
+      <h2 class="section-title" data-uz="Loyiha Boshlaylikmi?" data-ru="Начнём Проект?">Loyiha Boshlaylikmi?</h2>
+      <p class="section-desc" data-uz="Bizga yozing, 1 soat ichida javob beramiz" data-ru="Напишите нам, ответим в течение 1 часа">Bizga yozing, 1 soat ichida javob beramiz</p>
+    </div>
+    <div class="contact-wrap reveal">
+      <div class="form-grid">
+        <div class="form-field">
+          <label data-uz="Ismingiz" data-ru="Ваше имя">Ismingiz</label>
+          <input type="text" id="fname" placeholder="Abdulloh" />
+        </div>
+        <div class="form-field">
+          <label data-uz="Telefon / Telegram" data-ru="Телефон / Telegram">Telefon / Telegram</label>
+          <input type="text" id="fphone" placeholder="+998 90 123 4567" />
+        </div>
+        <div class="form-field full">
+          <label data-uz="Xizmat turi" data-ru="Тип услуги">Xizmat turi</label>
+          <select id="fservice">
+            <option value="" data-uz="Tanlang..." data-ru="Выберите...">Tanlang...</option>
+            <option value="website" data-uz="Vebsayt Yasash" data-ru="Разработка Сайта">Vebsayt Yasash</option>
+            <option value="bot" data-uz="Telegram Bot" data-ru="Telegram Бот">Telegram Bot</option>
+            <option value="app" data-uz="Mobil Ilova" data-ru="Мобильное Приложение">Mobil Ilova</option>
+            <option value="crm" data-uz="CRM Tizimi" data-ru="CRM Система">CRM Tizimi</option>
+            <option value="ecommerce" data-uz="E-Commerce" data-ru="E-Commerce">E-Commerce</option>
+            <option value="other" data-uz="Boshqa" data-ru="Другое">Boshqa</option>
+          </select>
+        </div>
+        <div class="form-field full">
+          <label data-uz="Loyiha haqida" data-ru="О проекте">Loyiha haqida</label>
+          <textarea id="fmsg" placeholder="Loyihangiz haqida qisqacha yozing..."></textarea>
+        </div>
+      </div>
+      <button class="submit-btn" onclick="submitForm()">
+        <span>✉️</span>
+        <span data-uz="Xabar Yuborish" data-ru="Отправить Сообщение">Xabar Yuborish</span>
+      </button>
+      <p class="form-note">
+        <span data-uz="Yoki to'g'ridan to'g'ri murojaat: " data-ru="Или напрямую: ">Yoki to'g'ridan to'g'ri murojaat: </span>
+        <a href="https://t.me/avazov_abror" target="_blank">@avazov_abror</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo">IronCode</div>
+        <p class="footer-about" data-uz="Sizning raqamli g'oyangizni hayotga tatbiq etamiz. Vebsayt, bot va ilovalardan tortib to korporativ tizimlargacha — biz yoningdamiz." data-ru="Воплощаем ваши цифровые идеи в жизнь. От сайтов, ботов и приложений до корпоративных систем — мы рядом.">Sizning raqamli g'oyangizni hayotga tatbiq etamiz. Vebsayt, bot va ilovalardan tortib to korporativ tizimlargacha — biz yoningdamiz.</p>
+        <div class="footer-socials">
+          <a href="https://t.me/avazov_abror" class="social-btn" target="_blank">✈️</a>
+          <a href="#" class="social-btn">📸</a>
+          <a href="#" class="social-btn">💼</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4 data-uz="Xizmatlar" data-ru="Услуги">Xizmatlar</h4>
+        <ul>
+          <li><a href="#services" data-uz="Vebsayt Yasash" data-ru="Разработка Сайтов">Vebsayt Yasash</a></li>
+          <li><a href="#services" data-uz="Telegram Bot" data-ru="Telegram Бот">Telegram Bot</a></li>
+          <li><a href="#services" data-uz="Mobil Ilova" data-ru="Мобильное Приложение">Mobil Ilova</a></li>
+          <li><a href="#niches" data-uz="CRM Tizimi" data-ru="CRM Система">CRM Tizimi</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4 data-uz="Aloqa" data-ru="Контакты">Aloqa</h4>
+        <ul>
+          <li><a href="https://t.me/avazov_abror" target="_blank">@avazov_abror</a></li>
+          <li><a href="#contact" data-uz="Ariza Yuborish" data-ru="Отправить Заявку">Ariza Yuborish</a></li>
+          <li><a href="#" data-uz="Bizning Kanalimiz" data-ru="Наш Канал">Bizning Kanalimiz</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 IronCode. <span data-uz="Barcha huquqlar himoyalangan." data-ru="Все права защищены.">Barcha huquqlar himoyalangan.</span></div>
+      <div class="footer-copy">Made with <span class="footer-heart">♥</span> in Uzbekistan</div>
+    </div>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✅</span>
+  <span id="toastMsg">Muvaffaqiyatli yuborildi!</span>
+</div>
+
+<!-- AB BAR -->
+<div class="ab-bar">
+  <span class="ab-label">A/B</span>
+  <button class="ab-btn active" id="btnA" onclick="setVariant('A')">Variant A</button>
+  <button class="ab-btn" id="btnB" onclick="setVariant('B')">Variant B</button>
+</div>
+
+<script>
+// ─── LANGUAGE ───
+let currentLang = 'uz';
+function toggleLang(){
+  currentLang = currentLang === 'uz' ? 'ru' : 'uz';
+  document.getElementById('langBtn').textContent = currentLang === 'uz' ? 'RU' : 'UZ';
+  document.querySelectorAll('[data-uz]').forEach(el => {
+    const val = el.getAttribute('data-' + currentLang);
+    if(val){
+      if(el.tagName === 'INPUT' || el.tagName === 'TEXTAREA'){
+        el.placeholder = val;
+      } else if(el.tagName === 'OPTION'){
+        el.text = val;
+      } else {
+        el.textContent = val;
+      }
+    }
+  });
+  document.querySelector('.hero-visual .badge-txt').textContent =
+    currentLang === 'uz' ? 'Muvaffaqiyatli loyiha' : 'Успешных проектов';
+}
+
+// ─── THEME ───
+let isDark = true;
+function toggleTheme(){
+  isDark = !isDark;
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
+}
+
+// ─── MOBILE NAV ───
+let mobileOpen = false;
+function toggleMobile(){
+  mobileOpen = !mobileOpen;
+  document.getElementById('mobileNav').classList.toggle('open', mobileOpen);
+  const btn = document.getElementById('menuBtn');
+  const spans = btn.querySelectorAll('span');
+  if(mobileOpen){
+    spans[0].style.transform = 'rotate(45deg) translate(5px,5px)';
+    spans[1].style.opacity = '0';
+    spans[2].style.transform = 'rotate(-45deg) translate(5px,-5px)';
+  } else {
+    spans.forEach(s => {s.style.transform='';s.style.opacity=''});
+  }
+}
+function closeMobile(){
+  mobileOpen = false;
+  document.getElementById('mobileNav').classList.remove('open');
+  document.querySelectorAll('#menuBtn span').forEach(s => {s.style.transform='';s.style.opacity=''});
+}
+
+// ─── A/B VARIANT ───
+function setVariant(v){
+  document.documentElement.setAttribute('data-variant', v);
+  document.getElementById('btnA').classList.toggle('active', v === 'A');
+  document.getElementById('btnB').classList.toggle('active', v === 'B');
+  // Track
+  console.log('A/B Variant:', v, '| Time:', new Date().toISOString());
+}
+
+// ─── FORM SUBMIT ───
+const BOT_TOKEN = '8513746127:AAGCXSEqTYvQLc71fwKRTqcsDCnYJLkiVw0';
+const CHAT_ID   = '-4124572235';
+
+async function submitForm(){
+  const name    = document.getElementById('fname').value.trim();
+  const phone   = document.getElementById('fphone').value.trim();
+  const service = document.getElementById('fservice');
+  const serviceText = service.options[service.selectedIndex]?.text || '—';
+  const msg     = document.getElementById('fmsg').value.trim();
+
+  if(!name || !phone){
+    showToast(currentLang === 'uz' ? '⚠️ Ism va telefon kiritish shart!' : '⚠️ Введите имя и телефон!', '#ff6b35');
+    return;
+  }
+
+  // Tugmani loading holatiga o'tkazish
+  const btn = document.querySelector('.submit-btn');
+  const btnOriginal = btn.innerHTML;
+  btn.innerHTML = '<span class="spin-icon">⏳</span><span>' + (currentLang === 'uz' ? 'Yuborilmoqda...' : 'Отправка...') + '</span>';
+  btn.disabled = true;
+  btn.style.opacity = '0.7';
+
+  const time = new Date().toLocaleString('ru-RU', {
+    day:'2-digit', month:'2-digit', year:'numeric',
+    hour:'2-digit', minute:'2-digit'
+  });
+
+  const text =
+    `🔥 *IronCode — Yangi So'rov*\n\n` +
+    `👤 *Ism:* ${name}\n` +
+    `📱 *Telefon:* ${phone}\n` +
+    `🛠 *Xizmat:* ${serviceText}\n` +
+    `📝 *Izoh:* ${msg || '—'}\n\n` +
+    `⏰ ${time}`;
+
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: CHAT_ID,
+        text: text,
+        parse_mode: 'Markdown'
+      })
+    });
+
+    const data = await res.json();
+
+    if(data.ok){
+      showToast(currentLang === 'uz' ? '✅ Xabaringiz yuborildi! Tez orada bog\'lanamiz.' : '✅ Сообщение отправлено! Свяжемся с вами скоро.', '#27c93f');
+      document.getElementById('fname').value = '';
+      document.getElementById('fphone').value = '';
+      document.getElementById('fservice').selectedIndex = 0;
+      document.getElementById('fmsg').value = '';
+    } else {
+      throw new Error(data.description || 'Xato');
+    }
+  } catch(err) {
+    console.error(err);
+    showToast(currentLang === 'uz' ? '❌ Xatolik yuz berdi. Qayta urinib ko\'ring.' : '❌ Произошла ошибка. Попробуйте ещё раз.', '#ff6b35');
+  } finally {
+    btn.innerHTML = btnOriginal;
+    btn.disabled = false;
+    btn.style.opacity = '';
+  }
+}
+
+function showToast(msg, color){
+  const toast = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  if(color) toast.style.borderColor = color;
+  toast.classList.add('show');
+  setTimeout(() => { toast.classList.remove('show'); toast.style.borderColor = ''; }, 4000);
+}
+
+// ─── SCROLL REVEAL ───
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible') });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ─── NAV SCROLL ───
+window.addEventListener('scroll', () => {
+  const nav = document.querySelector('nav');
+  if(window.scrollY > 50){
+    nav.style.background = isDark ? 'rgba(5,10,15,0.92)' : 'rgba(240,246,255,0.92)';
+  } else {
+    nav.style.background = '';
+  }
+});
+
+// ─── SMOOTH ANCHOR ───
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if(target){
+      e.preventDefault();
+      target.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+  });
+});
+
+// ─── AB TRACKING (simulated) ───
+const variant = Math.random() < 0.5 ? 'A' : 'B';
+setVariant(variant);
+console.log('🧪 A/B Test: User assigned to Variant', variant);
+</script>
+</body>
+</html>
